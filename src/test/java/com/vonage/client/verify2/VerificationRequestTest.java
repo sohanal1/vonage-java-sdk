@@ -169,8 +169,8 @@ public class VerificationRequestTest {
 			assertThrows(IllegalArgumentException.class, builder::build);
 			builder.brand("  ");
 			assertThrows(IllegalArgumentException.class, builder::build);
-			assertEquals(16, builder.brand("ABCDEFGHIJKLMNOP").build().getBrand().length());
-			assertEquals(17, builder.brand(builder.brand + 'Q').brand.length());
+			assertEquals(32, builder.brand("ABCDEFGHIJKLMNOPABCDEFGHIJKLMNOP").build().getBrand().length());
+			assertEquals(33, builder.brand(builder.brand + 'Q').brand.length());
 			assertThrows(IllegalArgumentException.class, builder::build);
 		}
 	}

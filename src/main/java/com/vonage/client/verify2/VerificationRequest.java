@@ -50,8 +50,8 @@ public class VerificationRequest implements Jsonable {
 		if ((brand = builder.brand) == null || brand.trim().isEmpty()) {
 			throw new IllegalArgumentException("Brand name is required.");
 		}
-		if (brand.length() > 16) {
-			throw new IllegalArgumentException("Brand cannot exceed 16 characters in length.");
+		if (brand.length() > 32) {
+			throw new IllegalArgumentException("Brand cannot exceed 32 characters in length.");
 		}
 		if ((channelTimeout = builder.timeout) != null && (channelTimeout < 60 || channelTimeout > 900)) {
 			throw new IllegalArgumentException("Delivery wait timeout must be between 60 and 900 seconds.");

@@ -8,9 +8,9 @@ plugins {
     id "com.github.ben-manes.versions" version '0.51.0'
 }
 
-group = "com.vonage"
-archivesBaseName = "server-sdk"
-version = "8.7.0"
+group = "com.vonage.onespan"
+archivesBaseName = "server-sdk-oss"
+version = "8.7.1"
 
 ext.githubPath = 'Vonage/vonage-java-sdk'
 
@@ -75,10 +75,10 @@ javadoc {
 jar {
     manifest {
         attributes(
-            'Created-By': 'Vonage',
-            'Implementation-Vendor': 'Vonage',
-            'Implementation-Title': 'Vonage Java Server SDK',
-            'Implementation-Version': archiveVersion
+                'Created-By': 'Vonage',
+                'Implementation-Vendor': 'Vonage',
+                'Implementation-Title': 'Vonage Java Server SDK',
+                'Implementation-Version': archiveVersion
         )
     }
 }
@@ -110,46 +110,25 @@ java {
 
 publishing {
     publications {
-        mavenJava(MavenPublication) {
-            from components.java
-            pom {
-                name = "Vonage Java Server SDK"
-                artifactId = archivesBaseName
-                packaging = 'jar'
-                description = "Java client for Vonage APIs"
-                url = "https://github.com/$githubPath"
-                licenses {
-                    license {
-                        name = "The Apache License, Version 2.0"
-                        url = "https://raw.github.com/$githubPath/main/LICENCE.txt"
-                    }
-                }
-                developers {
-                    developer {
-                        id = "devrel"
-                        name = "Vonage Devrel"
-                        email = "devrel@vonage.com"
-                    }
-                }
-                scm {
-                    connection = "scm:git@github.com:$githubPath"
-                    developerConnection = "scm:git@github.com:$githubPath"
-                    url = "http://github.com:$githubPath"
-                }
-                issueManagement {
-                    system = "GitHub"
-                    url = "https://github.com/$githubPath/issues"
-                }
-            }
+        maven(MavenPublication) {
+            from(components.java)
         }
     }
-}
-
-nexusPublishing {
     repositories {
-        sonatype {
-            username = System.getenv("OSS_USERNAME")
-            password = System.getenv("OSS_PASSWORD")
+        maven {
+
+            url "https://git.onespan.com/api/v4/projects/32381/packages/maven"
+
+            credentials(HttpHeaderCredentials) {
+                name = System.getenv("CI_JOB_TOKEN") ? "Job-Token" : "Private-Token"
+                value = System.getenv("CI_JOB_TOKEN") ? System.getenv("CI_JOB_TOKEN") : gitLabPrivateToken
+            }
+            authentication {
+                header(HttpHeaderAuthentication)
+            }
+            content {
+                includeGroupByRegex "com\\.onespan.*"
+            }
         }
     }
 }
@@ -162,5 +141,5 @@ signing {
     def signingKey = System.getenv("signingKey")
     def signingPassword = System.getenv("signingPassword")
     useInMemoryPgpKeys(signingKey, signingPassword)
-    sign publishing.publications.mavenJava
+ //   sign publishing.publications.mavenJava
 }
